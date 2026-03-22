@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ammonia Plant — Process Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2f0eb;
+  --surface:#ffffff;
+  --surface2:#f7f5f0;
+  --ink:#111010;
+  --ink2:#5c5852;
+  --ink3:#a09a92;
+  --line:#e2ddd6;
+  --line2:#ccc8c0;
+  --g:#1a6b4a;   --gb:#e6f5ee;
+  --b:#1a3f7a;   --bb:#e6edf8;
+  --a:#7a4a08;   --ab:#fef3e0;
+  --r:#8a1a1a;   --rb:#fde6e6;
+  --p:#3d1878;   --pb:#eeebfa;
+  --acc:#c84b00;
+  --sans:'Space Grotesk',sans-serif;
+  --mono:'Space Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:var(--ink);height:48px;
+  display:flex;align-items:center;padding:0 24px;gap:16px;
+}
+.logo{font-family:var(--mono);font-size:12px;color:#fff;letter-spacing:2px;white-space:nowrap}
+.logo b{color:var(--acc)}
+.pbar-wrap{flex:1;max-width:200px;height:2px;background:rgba(255,255,255,.15);border-radius:2px;margin-left:auto}
+.pbar{height:2px;background:var(--acc);border-radius:2px;transition:width .35s}
+.pct{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);margin-left:8px;white-space:nowrap}
+
+/* PILL NAV */
+.pillnav{
+  background:var(--surface2);border-bottom:1px solid var(--line);
+  display:flex;overflow-x:auto;padding:0 20px;scrollbar-width:none;
+}
+.pillnav::-webkit-scrollbar{display:none}
+.pn{
+  flex-shrink:0;display:flex;align-items:center;gap:5px;
+  padding:9px 13px;border:none;background:none;cursor:pointer;
+  font-family:var(--mono);font-size:10px;color:var(--ink3);
+  border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;
+}
+.pn:hover{color:var(--ink2)}
+.pn.active{color:var(--acc);border-bottom-color:var(--acc)}
+.pn.done{color:var(--ink2)}
+.pnum{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--line);color:var(--ink3);
+  font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.pn.active .pnum{background:var(--acc);color:#fff}
+.pn.done .pnum{background:var(--g);color:#fff}
+
+/* LAYOUT */
+.wrap{display:grid;grid-template-columns:1fr 320px;min-height:calc(100vh - 100px)}
+@media(max-width:860px){.wrap{grid-template-columns:1fr}}
+
+/* LEFT */
+.left{padding:28px 32px 24px}
+
+.eyebrow{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.sec-chip{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 9px;border-radius:3px;
+}
+.sctr{font-family:var(--mono);font-size:10px;color:var(--ink3)}
+
+.stitle{font-size:26px;font-weight:700;line-height:1.2;margin-bottom:8px}
+.hook{
+  font-size:13px;color:var(--ink2);line-height:1.6;
+  border-left:3px solid var(--acc);padding-left:12px;margin-bottom:22px;
+}
+
+/* DIAGRAM */
+.dcard{background:var(--ink);border-radius:6px;padding:16px;margin-bottom:22px}
+.dcard svg{width:100%;display:block}
+
+/* SECTION HEADING */
+.sh{
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:10px;padding-bottom:6px;
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;
+}
+
+/* WHY CARDS — compact 2-col */
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+@media(max-width:600px){.wgrid{grid-template-columns:1fr}}
+.wcard{
+  border-radius:5px;padding:12px 14px;border:1px solid;
+}
+.wcard-q{
+  font-size:11px;font-weight:700;color:inherit;margin-bottom:4px;line-height:1.3;
+  opacity:.7;font-family:var(--mono);
+}
+.wcard-a{
+  font-size:12px;line-height:1.55;color:inherit;opacity:.9;
+}
+.wg{background:var(--gb);color:var(--g);border-color:rgba(26,107,74,.2)}
+.wb{background:var(--bb);color:var(--b);border-color:rgba(26,63,122,.2)}
+.wa{background:var(--ab);color:var(--a);border-color:rgba(122,74,8,.2)}
+.wr{background:var(--rb);color:var(--r);border-color:rgba(138,26,26,.2)}
+.wp{background:var(--pb);color:var(--p);border-color:rgba(61,24,120,.2)}
+
+/* LOGIC — compact bullet list */
+.llist{margin-bottom:20px;display:flex;flex-direction:column;gap:8px}
+.litem{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:5px;padding:10px 12px;
+}
+.lnum{
+  width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;
+  font-family:var(--mono);font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.lbody{flex:1}
+.ldecision{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:3px;line-height:1.35}
+.lreason{font-size:12px;color:var(--ink2);line-height:1.5;margin-bottom:4px}
+.lifnot{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;color:var(--r);background:var(--rb);
+  padding:2px 8px;border-radius:3px;font-weight:500;
+}
+
+/* EQUIPMENT TABLE */
+.etable{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12px}
+.etable th{
+  font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--ink3);padding:6px 10px;text-align:left;
+  border-bottom:2px solid var(--line2);background:var(--surface2);
+}
+.etable td{
+  padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top;
+  color:var(--ink2);line-height:1.5;
+}
+.etable tr:last-child td{border-bottom:none}
+.etable td:first-child{
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--acc);white-space:nowrap;
+}
+.etable td:nth-child(2){font-size:12px;color:var(--ink);font-weight:500}
+
+/* CONSEQUENCE */
+.cbox{
+  border-radius:5px;padding:12px 14px;
+  background:rgba(200,75,0,.06);border:1px solid rgba(200,75,0,.25);
+}
+.cbox-t{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc);margin-bottom:5px}
+.cbox-b{font-size:12px;line-height:1.55;color:var(--ink2)}
+
+/* RIGHT SIDEBAR */
+.right{background:var(--surface2);border-left:1px solid var(--line);padding:22px 20px;overflow-y:auto}
+.sb-sec{margin-bottom:20px}
+.sb-h{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+
+/* SPEC GRID */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.sc{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:9px 10px}
+.sv{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink);line-height:1}
+.su{font-size:10px;color:var(--ink3);font-weight:400}
+.sl{font-size:10px;color:var(--ink3);margin-top:3px;line-height:1.3}
+
+/* CONDITION TAGS */
+.ctags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.ctag{
+  font-family:var(--mono);font-size:10px;padding:3px 8px;
+  border-radius:3px;border:1px solid;
+}
+.ctg{background:var(--gb);color:var(--g);border-color:rgba(26,107,74,.3)}
+.ctb{background:var(--bb);color:var(--b);border-color:rgba(26,63,122,.3)}
+.cta{background:var(--ab);color:var(--a);border-color:rgba(122,74,8,.3)}
+.ctr{background:var(--rb);color:var(--r);border-color:rgba(138,26,26,.3)}
+.ctn{background:var(--line);color:var(--ink2);border-color:var(--line2)}
+
+/* IF-NOT LIST */
+.inlist{display:flex;flex-direction:column;gap:5px}
+.initem{
+  font-size:11px;line-height:1.5;color:var(--r);
+  background:var(--rb);border:1px solid rgba(138,26,26,.15);
+  border-radius:3px;padding:6px 9px;
+  display:flex;gap:5px;
+}
+.inarr{flex-shrink:0;font-weight:700}
+
+/* REACTIONS */
+.rxlist{display:flex;flex-direction:column;gap:5px;margin-bottom:20px}
+.rx{
+  font-family:var(--mono);font-size:11px;padding:7px 10px;
+  border-radius:3px;border-left:3px solid;line-height:1.5;
+}
+.rxn{background:var(--surface);color:var(--ink2);border-left-color:var(--ink3)}
+.rxg{background:var(--gb);color:var(--g);border-left-color:var(--g)}
+.rxa{background:var(--ab);color:var(--a);border-left-color:var(--a)}
+.rxr{background:var(--rb);color:var(--r);border-left-color:var(--r)}
+.rxb{background:var(--bb);color:var(--b);border-left-color:var(--b)}
+.rx-lbl{font-size:9px;opacity:.7;display:block;margin-bottom:2px;letter-spacing:.5px}
+
+/* BOTTOM NAV */
+.botnav{
+  position:sticky;bottom:0;z-index:100;
+  background:var(--ink);padding:12px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:2px solid var(--acc);
+}
+.nbtn{
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;padding:9px 22px;border-radius:3px;
+  border:1px solid rgba(255,255,255,.2);background:transparent;
+  color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;
+}
+.nbtn:hover:not(:disabled){color:#fff;border-color:rgba(255,255,255,.5)}
+.nbtn:disabled{opacity:.2;cursor:not-allowed}
+.nbtn.nxt{background:var(--acc);color:#fff;border-color:var(--acc)}
+.nbtn.nxt:hover:not(:disabled){background:#a33900}
+.nctr{text-align:center}
+.nstep{font-family:var(--mono);font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-bottom:2px}
+.ntitle{font-size:12px;color:rgba(255,255,255,.6);max-width:180px}
+
+@keyframes fin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fin .28s ease}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">NH<b>₃</b> · Process Logic Guide</div>
+  <div class="pbar-wrap"><div class="pbar" id="pb"></div></div>
+  <span class="pct" id="pct"></span>
+</div>
+<div class="pillnav" id="pnav"></div>
+
+<div class="wrap">
+  <div class="left" id="left"></div>
+  <div class="right" id="right"></div>
+</div>
+
+<div class="botnav">
+  <button class="nbtn" id="prevBtn" onclick="go(-1)">← Back</button>
+  <div class="nctr">
+    <div class="nstep" id="nstep"></div>
+    <div class="ntitle" id="ntitle"></div>
+  </div>
+  <button class="nbtn nxt" id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+
+<script>
+const D=[
+{
+  sec:"A",sl:"Feed Prep",sc:"#1a6b4a",sbg:"#e6f5ee",
+  title:"Desulphurization",
+  hook:"Every sulphur atom in the feed must be removed to <0.05 ppm. One ppm of sulphur reaching the reformer destroys the nickel catalyst within hours.",
+  why:[
+    {c:"wg",q:"Why do this step?",a:"Ni, Cu, and Fe catalysts downstream all form inactive metal sulphides with even trace sulphur. This is the only point where sulphur can be removed."},
+    {c:"wb",q:"Why 2 stages (HDS + ZnO)?",a:"ZnO cannot absorb organic sulphur (mercaptans, thiophenes). Stage 1 converts all organic S → H₂S. Stage 2 ZnO absorbs H₂S irreversibly."},
+    {c:"wa",q:"Why exactly 380°C?",a:"Below 380°C: thiophene hydrogenation incomplete. Above 400°C: polymerisation deposits on catalyst. 380°C is the precise window for complete conversion without side reactions."},
+    {c:"wr",q:"Why two ZnO vessels in series?",a:"When lead vessel is fully sulphided, switch to lag while recharging lead. Single vessel = forced plant shutdown every 3–6 months."}
+  ],
+  logic:[
+    {n:"1",d:"Recycle H₂ added before R3201",r:"Ni-Mo catalyst needs H₂ present to break C-S bonds. No H₂ = organic sulphur passes through unreacted.",ifn:"Sulphur breakthrough → reformer poisoning"},
+    {n:"2",d:"E3204 preheats NG to 380°C",r:"HDS catalyst activation temperature. Below 380°C, thiophenes (most refractory S-compound) survive.",ifn:"Incomplete S removal → downstream catalyst damage"},
+    {n:"3",d:"R3202A/B in series, not parallel",r:"Series = dual-stage guard. Lead absorbs bulk, lag polishes to <0.05 ppm. Parallel gives no redundancy.",ifn:"Single vessel = shutdown needed to replace spent ZnO"},
+    {n:"4",d:"ZnO vessels never steamed",r:"Steam hydrates ZnO → Zn(OH)₂ which has zero absorption capacity and cannot be regenerated.",ifn:"ZnO hydration = complete loss of absorption = immediate replacement"}
+  ],
+  equip:[
+    {t:"E3204",n:"NG Preheater",why:"Uses free flue gas waste heat (no fuel cost) to reach the 380°C minimum for thiophene hydrogenation.",absent:"NG enters R3201 cold → thiophenes pass through → reformer Ni catalyst sulphided within 1–2 days."},
+    {t:"R3201",n:"Hydrogenator",why:"TK-251 Ni-Mo catalyst converts all organic S species → H₂S, which ZnO can then absorb. Without this, ZnO only removes native H₂S (typically <20% of total S).",absent:"80–90% of organic sulphur passes to ZnO unreacted → total sulphur slip to reformer."},
+    {t:"R3202A/B",n:"ZnO Absorbers (×2)",why:"ZnO + H₂S → ZnS + H₂O is irreversible and goes to completion. Two-vessel series gives redundancy and continuous operation without plant shutdown for catalyst change.",absent:"No ZnO = H₂S passes to reformer → catalyst destroyed within hours."}
+  ],
+  rxns:[
+    {c:"rxn",lbl:"HDS reactions (R3201)",eq:"RSH + H₂ → RH + H₂S"},
+    {c:"rxn",eq:"COS + H₂ → CO + H₂S"},
+    {c:"rxn",eq:"C₄H₄S + 4H₂ → C₄H₁₀ + H₂S"},
+    {c:"rxg",lbl:"ZnO absorption (R3202A/B)",eq:"ZnO + H₂S → ZnS + H₂O  (irreversible)"}
+  ],
+  consequence:"Skip this → reformer Ni catalyst sulphided in <24 hr → carbon formation → tube hot bands → emergency shutdown. Cost: 2–4 weeks downtime + catalyst replacement.",
+  specs:[{v:"<0.05",u:"ppm",l:"S at outlet"},{v:"9.0",u:"m³",l:"TK-251 per reactor"},{v:"380–400",u:"°C",l:"HDS temperature"},{v:"30",u:"m³",l:"ZnO per vessel"}],
+  conds:[{t:"NG ≤10 ppm S",c:"ctn"},{t:"380–400°C",c:"cta"},{t:"S out <0.05 ppm",c:"ctg"},{t:"No steam on ZnO",c:"ctr"}],
+  ifnot:["Reformer Ni → NiS: deactivation within hours","LT shift Cu → permanent poison at 0.2 wt% S pickup","Carbon deposits → tube hot bands → structural failure"],
+  svgH:195,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="50" width="80" height="34" rx="3" fill="#1a3f7a22" stroke="#1a3f7a" stroke-width="1"/>
+<text x="50" y="63" text-anchor="middle" font-size="10" fill="#fff" font-family="Space Grotesk" font-weight="600">NG feed</text>
+<text x="50" y="76" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">≤10 ppm S</text>
+<line x1="90" y1="67" x2="118" y2="67" stroke="#1a6b4a" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="104" y="60" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">380°C</text>
+<rect x="118" y="46" width="90" height="42" rx="3" fill="#1a6b4a" stroke="#0f5038" stroke-width="1.5"/>
+<text x="163" y="63" text-anchor="middle" font-size="11" fill="#fff" font-family="Space Grotesk" font-weight="700">E3204</text>
+<text x="163" y="78" text-anchor="middle" font-size="9" fill="#9fe1cb" font-family="Space Mono">Preheater</text>
+<text x="163" y="36" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">+Recycle H₂ ↓</text>
+<line x1="208" y1="67" x2="236" y2="67" stroke="#1a6b4a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="236" y="36" width="100" height="60" rx="3" fill="#1a6b4a" stroke="#0f5038" stroke-width="2"/>
+<text x="286" y="58" text-anchor="middle" font-size="12" fill="#fff" font-family="Space Grotesk" font-weight="700">R3201</text>
+<text x="286" y="73" text-anchor="middle" font-size="9" fill="#9fe1cb" font-family="Space Mono">Hydrogenator</text>
+<text x="286" y="87" text-anchor="middle" font-size="9" fill="#5dcaa5" font-family="Space Mono">TK-251 · 9m³</text>
+<line x1="336" y1="67" x2="365" y2="67" stroke="#1a6b4a" stroke-width="1.5"/>
+<line x1="365" y1="67" x2="365" y2="115" stroke="#1a6b4a" stroke-width="1.5"/>
+<line x1="365" y1="115" x2="395" y2="115" stroke="#1a6b4a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="395" y="95" width="110" height="42" rx="3" fill="#1a6b4a" stroke="#0f5038" stroke-width="2"/>
+<text x="450" y="112" text-anchor="middle" font-size="11" fill="#fff" font-family="Space Grotesk" font-weight="700">R3202A/B</text>
+<text x="450" y="127" text-anchor="middle" font-size="9" fill="#9fe1cb" font-family="Space Mono">ZnO · 30m³ · series</text>
+<line x1="505" y1="116" x2="545" y2="116" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="545" y="99" width="120" height="34" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="2"/>
+<text x="605" y="114" text-anchor="middle" font-size="11" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">S &lt; 0.05 ppm</text>
+<text x="605" y="127" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">→ Reforming</text>
+<text x="450" y="155" text-anchor="middle" font-size="9" fill="#5a6078" font-family="Space Mono">ZnO + H₂S → ZnS + H₂O (irreversible)</text>`
+},
+
+{
+  sec:"A",sl:"Feed Prep",sc:"#1a6b4a",sbg:"#e6f5ee",
+  title:"Adiabatic Prereforming",
+  hook:"Heavy hydrocarbons (C₂₊) from naphtha would coke the primary reformer catalyst within hours if fed directly. R3206 converts all C₂₊ to methane first — presenting a uniform safe feed.",
+  why:[
+    {c:"wg",q:"Why do this step?",a:"C₂₊ HCs reform faster than CH₄ on Ni. At 800°C they crack so fast they deposit solid carbon at the top of reformer tubes before steam can reform them — destroying catalyst within hours."},
+    {c:"wb",q:"Why adiabatic (no external heat)?",a:"C₂₊ reforming (endothermic) + methanation (exothermic) nearly cancel out. Net heat ≈ 0 → no furnace needed. Simpler, cheaper, more reliable vessel."},
+    {c:"wa",q:"Why bypass for NG-only?",a:"Pure CH₄ is stable at 490°C and reforms gradually from top to bottom of H3201 without coking. Prereformer adds no benefit for NG — just pressure drop."},
+    {c:"wr",q:"Why 490°C inlet specifically?",a:"RKNGR-7H catalyst activates at ~450°C minimum. 490°C ensures complete C₂₊ conversion. Using E3201 (flue gas WHR coil) achieves this for free — no separate fired heater needed."}
+  ],
+  logic:[
+    {n:"1",d:"Process steam mixed before E3201 (W/C = 3.3)",r:"Steam suppresses carbon formation. W/C < 2.5 makes Boudouard reaction (2CO→C+CO₂) thermodynamically favourable.",ifn:"W/C <2.5 = carbon on catalyst = pressure drop rise"},
+    {n:"2",d:"Two catalyst beds (2350 + 1450 mm)",r:"Bed 1 handles bulk C₂₊ conversion. Bed 2 provides residence time for traces (especially aromatics) to reach equilibrium.",ifn:"Single thin bed = incomplete conversion → heavy HCs to H3201"},
+    {n:"3",d:"Outlet feeds H3201 without intermediate cooling",r:"Prereformer outlet (~490°C) is exactly the right temperature for primary reformer inlet. Cooling and reheating would waste energy.",ifn:"No consequence — just unnecessary cost if cooled"}
+  ],
+  equip:[
+    {t:"E3201",n:"Feed preheater coil",why:"Located in H3201 convection section — uses free flue gas waste heat to reach 490°C. No separate fired heater required.",absent:"Cold feed (~50°C) enters R3206 → catalyst inactive → no C₂₊ conversion → coking in H3201."},
+    {t:"R3206",n:"Adiabatic Prereformer",why:"Adiabatic design works because the reaction net heat is near-zero. RKNGR-7H is a specially promoted Ni catalyst active at 450–500°C (lower than standard reforming catalysts).",absent:"C₂₊ enters H3201 → rapid coking at tube tops within 8–12 hr → pressure drop rise → hot bands → shutdown."}
+  ],
+  rxns:[
+    {c:"rxn",lbl:"C₂₊ reforming (endothermic)",eq:"CₙH₂ₙ₊₂ + nH₂O → nCO + (2n+1)H₂"},
+    {c:"rxa",lbl:"Methanation (exothermic, simultaneous)",eq:"CO + 3H₂ → CH₄ + H₂O"},
+    {c:"rxg",lbl:"Net result",eq:"All C₂₊ → CH₄  (complete conversion at outlet)"}
+  ],
+  consequence:"With naphtha feed: skip R3206 → primary reformer coking within 8–12 hr → shutdown. For NG-only: bypass is correct — no consequence. The bypass is intentional and normal.",
+  specs:[{v:"23.4",u:"m³",l:"RKNGR-7H catalyst"},{v:"490",u:"°C",l:"Inlet temperature"},{v:"2350+1450",u:"mm",l:"Bed heights"},{v:"3.3",u:"W/C",l:"Min steam ratio"}],
+  conds:[{t:"Mixed feed only",c:"cta"},{t:"490°C inlet",c:"cta"},{t:"W/C ≥ 3.3",c:"ctg"},{t:"NG → bypass",c:"ctb"}],
+  ifnot:["C₂₊ to H3201 → coking at tube tops within 8–12 hr","Catalyst fragmentation → ΔP rise → unplanned shutdown","NG-only: no consequence if R3206 bypassed (correct operation)"],
+  svgH:175,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="40" width="90" height="34" rx="3" fill="#1a3f7a22" stroke="#1a3f7a" stroke-width="1"/>
+<text x="55" y="54" text-anchor="middle" font-size="10" fill="#fff" font-family="Space Grotesk" font-weight="600">Desuph. feed</text>
+<text x="55" y="67" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">+ steam W/C=3.3</text>
+<line x1="100" y1="57" x2="128" y2="57" stroke="#1a6b4a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="128" y="40" width="88" height="34" rx="3" fill="#1a6b4a33" stroke="#1a6b4a" stroke-width="1.5"/>
+<text x="172" y="55" text-anchor="middle" font-size="11" fill="#fff" font-family="Space Grotesk" font-weight="700">E3201</text>
+<text x="172" y="67" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">490°C WHR</text>
+<line x1="216" y1="57" x2="244" y2="57" stroke="#1a6b4a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="244" y="18" width="210" height="76" rx="4" fill="#1a6b4a" stroke="#0f5038" stroke-width="2"/>
+<text x="349" y="40" text-anchor="middle" font-size="12" fill="#fff" font-family="Space Grotesk" font-weight="700">R3206 — Adiabatic Prereformer</text>
+<rect x="260" y="48" width="88" height="34" rx="3" fill="#0f503890" stroke="#5dcaa5" stroke-width="0.5"/>
+<rect x="358" y="48" width="80" height="34" rx="3" fill="#0f503870" stroke="#5dcaa5" stroke-width="0.5"/>
+<text x="304" y="63" text-anchor="middle" font-size="10" fill="#9fe1cb" font-family="Space Grotesk">Bed 1</text>
+<text x="304" y="75" text-anchor="middle" font-size="9" fill="#5dcaa5" font-family="Space Mono">2350mm</text>
+<text x="398" y="63" text-anchor="middle" font-size="10" fill="#9fe1cb" font-family="Space Grotesk">Bed 2</text>
+<text x="398" y="75" text-anchor="middle" font-size="9" fill="#5dcaa5" font-family="Space Mono">1450mm</text>
+<line x1="454" y1="57" x2="490" y2="57" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="490" y="40" width="130" height="34" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="2"/>
+<text x="555" y="55" text-anchor="middle" font-size="11" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">All C₂₊ → CH₄</text>
+<text x="555" y="67" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">→ H3201</text>
+<rect x="10" y="125" width="120" height="28" rx="3" fill="none" stroke="#9a9088" stroke-width="1" stroke-dasharray="4 2"/>
+<text x="70" y="137" text-anchor="middle" font-size="10" fill="#9a9088" font-family="Space Grotesk">NG-only bypass</text>
+<text x="70" y="149" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">R3206 skipped</text>
+<path d="M130 139 L244 57" fill="none" stroke="#9a9088" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#a)"/>`
+},
+
+{
+  sec:"B",sl:"Reaction",sc:"#1a3f7a",sbg:"#e6edf8",
+  title:"Primary Reforming",
+  hook:"The hydrogen factory. CH₄ + steam reacts over Ni catalyst inside 288 heated tubes at 800°C to make H₂ + CO. The reaction is endothermic — constant external heat is essential, making this the most energy-intensive step.",
+  why:[
+    {c:"wb",q:"Why a fired tubular furnace?",a:"Reforming absorbs ~206 kJ/mol CH₄ — must be supplied externally through tube walls. 288 narrow tubes give enormous surface area for heat transfer. One large vessel cannot achieve this heat flux."},
+    {c:"wg",q:"Why leave 10–11% CH₄ unconverted?",a:"Complete conversion needs higher T (tubes creep-fail above ~900°C metal T) or lower P (wastes compression energy). 10–11% residual at 800°C is the economic optimum. Remaining CH₄ is managed downstream."},
+    {c:"wa",q:"Why W/C = 3.3 (excess steam)?",a:"Below W/C ~2.5 the Boudouard reaction (2CO→C) and CH₄ cracking become thermodynamically favourable. W/C 3.3 keeps equilibrium firmly in the carbon-free zone while also improving H₂ yield."},
+    {c:"wr",q:"Why recover flue gas heat?",a:"Flue gas exits radiant box at ~1000°C. WHR coils (E3204, E3201, steam superheat) recover this to preheat feeds — saving 15–20% of total fuel consumption. Without WHR, stack exits at 1000°C, massive energy waste."}
+  ],
+  logic:[
+    {n:"1",d:"Inlet temperature 485–490°C",r:"R-67-7H catalyst activates above ~450°C. Inlet set by available waste heat temperature in E3201 convection coil. Below 450°C = no conversion in upper tube section.",ifn:"Cold inlet = upper tubes inactive = shorter effective length = higher CH₄ outlet"},
+    {n:"2",d:"5% excess air to burners",r:"Ensures complete combustion. Less = CO in flue gas (inefficient + safety). More = wastes fuel heating excess N₂.",ifn:"<2% excess = incomplete combustion risk → CO in flue gas → efficiency loss"},
+    {n:"3",d:"Pre-reduced R-67-7H catalyst loaded",r:"Ni must be in metallic form (Fe°) to be active. Pre-reduced form shortens startup procedure — only superficial oxide needs reduction.",ifn:"Fully oxidised catalyst = days longer startup for complete reduction"},
+    {n:"4",d:"Wall-burner (side-fired) design",r:"Most uniform heat distribution across all tube rows vs. top-fired. Prevents local tube overheating and hot bands.",ifn:"Non-uniform firing = uneven tube temperatures = premature tube failure"}
+  ],
+  equip:[
+    {t:"H3201",n:"Primary Reformer (fired box)",why:"Side-fired radiant box gives the most uniform heat distribution across 288 tube rows — critical to prevent hot spots that cause tube creep failure. No other furnace type achieves this at industrial scale.",absent:"No H3201 = no hydrogen = no synthesis gas = no ammonia. This is the irreplaceable core of the plant."},
+    {t:"E3204/E3201",n:"WHR preheater coils",why:"Located inside H3201 convection section — uses free flue gas heat. Raises NG from ambient to 380°C and feed/steam to 490°C without any additional fuel.",absent:"Feeds enter cold → 15–20% more fuel needed → ~10% higher operating cost for the plant's lifetime."}
+  ],
+  rxns:[
+    {c:"rxb",lbl:"Primary reforming reactions",eq:"CH₄ + H₂O ⇌ CO + 3H₂     ΔH = +206 kJ/mol"},
+    {c:"rxn",eq:"CH₄ + 2H₂O ⇌ CO₂ + 4H₂   ΔH = +165 kJ/mol"},
+    {c:"rxa",lbl:"Simultaneous shift",eq:"CO + H₂O ⇌ CO₂ + H₂       ΔH = –41 kJ/mol"},
+    {c:"rxg",lbl:"Outlet composition (dry basis)",eq:"H₂≈56%  CO≈13%  CO₂≈8%  CH₄≈10–11%"}
+  ],
+  consequence:"Without H3201 there is no H₂ production — the plant cannot run. Any tube failure, catalyst coking, or sulphur poisoning event shuts down 100% of production. It consumes ~50–60% of total plant fuel and is the most monitored, most critical piece of equipment.",
+  specs:[{v:"288",u:"tubes",l:"Catalyst tubes"},{v:"800",u:"°C",l:"Outlet T"},{v:"42.8",u:"m³",l:"R-67-7H catalyst"},{v:"10–11",u:"%",l:"CH₄ outlet (dry)"}],
+  conds:[{t:"Tin 485–490°C",c:"cta"},{t:"Tout 800°C",c:"ctr"},{t:"34 kg/cm²g",c:"ctn"},{t:"W/C = 3.3",c:"ctg"}],
+  ifnot:["Sulphur entry → NiS → deactivation within hours","W/C <2.5 → carbon on catalyst → hot bands → tube failure","Tube T >900°C → creep failure → tube leak → emergency shutdown"],
+  svgH:200,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="80" width="90" height="34" rx="3" fill="#1a3f7a22" stroke="#1a3f7a" stroke-width="1"/>
+<text x="55" y="94" text-anchor="middle" font-size="10" fill="#5b8def" font-family="Space Grotesk" font-weight="600">Feed+steam</text>
+<text x="55" y="107" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">490°C · W/C=3.3</text>
+<line x1="100" y1="97" x2="130" y2="97" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="130" y="18" width="360" height="120" rx="5" fill="#111010" stroke="#1a3f7a" stroke-width="2"/>
+<text x="310" y="38" text-anchor="middle" font-size="11" fill="#5b8def" font-family="Space Grotesk" font-weight="700">H3201 — PRIMARY REFORMER · 288 TUBES</text>
+<rect x="148" y="46" width="20" height="78" rx="2" fill="#1a2a50" stroke="#5b8def" stroke-width="0.5"/>
+<rect x="175" y="46" width="20" height="78" rx="2" fill="#1a2260" stroke="#5b8def" stroke-width="0.5"/>
+<rect x="202" y="46" width="20" height="78" rx="2" fill="#1a1870" stroke="#5b8def" stroke-width="0.5"/>
+<rect x="229" y="46" width="20" height="78" rx="2" fill="#221480" stroke="#5b8def" stroke-width="0.5"/>
+<rect x="256" y="46" width="20" height="78" rx="2" fill="#3a1090" stroke="#7b5ef8" stroke-width="0.5"/>
+<rect x="283" y="46" width="20" height="78" rx="2" fill="#5a0e98" stroke="#a06ef0" stroke-width="0.5"/>
+<rect x="310" y="46" width="20" height="78" rx="2" fill="#780c88" stroke="#c050b0" stroke-width="0.5"/>
+<rect x="337" y="46" width="20" height="78" rx="2" fill="#920a60" stroke="#d05080" stroke-width="0.5"/>
+<rect x="364" y="46" width="20" height="78" rx="2" fill="#aa0830" stroke="#d04050" stroke-width="0.5"/>
+<rect x="391" y="46" width="20" height="78" rx="2" fill="#c00820" stroke="#e03030" stroke-width="0.5"/>
+<rect x="418" y="46" width="20" height="78" rx="2" fill="#d20818" stroke="#e04020" stroke-width="0.5"/>
+<rect x="445" y="46" width="20" height="78" rx="2" fill="#e00c0c" stroke="#f02010" stroke-width="0.5"/>
+<text x="148" y="136" font-size="8" fill="#5b8def" font-family="Space Mono">490°C</text>
+<text x="445" y="136" font-size="8" fill="#e05c5c" font-family="Space Mono">800°C</text>
+<text x="310" y="153" text-anchor="middle" font-size="9" fill="#5a6078" font-family="Space Mono">R-67-7H pre-reduced Ni · 42.8 m³ · 34 kg/cm²g</text>
+<line x1="490" y1="97" x2="535" y2="97" stroke="#c84b00" stroke-width="2" marker-end="url(#a)"/>
+<rect x="535" y="80" width="120" height="34" rx="3" fill="#1a0a00" stroke="#c84b00" stroke-width="2"/>
+<text x="595" y="94" text-anchor="middle" font-size="11" fill="#ff8040" font-family="Space Grotesk" font-weight="700">800°C out</text>
+<text x="595" y="107" text-anchor="middle" font-size="9" fill="#c84b00" font-family="Space Mono">CH₄≈10% → R3203</text>
+<text x="310" y="180" text-anchor="middle" font-size="9" fill="#5a6078" font-family="Space Mono">Flue gas WHR → E3204 · E3201 · steam preheat`
+},
+
+{
+  sec:"B",sl:"Reaction",sc:"#1a3f7a",sbg:"#e6edf8",
+  title:"Secondary Reforming",
+  hook:"Two jobs simultaneously: finish converting the last 10% CH₄ AND introduce exactly the right amount of N₂ for ammonia synthesis. The air flow is locked in — there is no correction available downstream.",
+  why:[
+    {c:"wr",q:"Why inject air (not pure N₂)?",a:"Pure N₂ is inert — it cannot generate heat. The O₂ in air combusts H₂ and CH₄, generating 1100–1200°C in the combustion zone. This heat drives the endothermic reforming of residual CH₄. O₂ is sacrificed to create the thermal energy needed."},
+    {c:"wb",q:"Why is the air quantity fixed?",a:"All plant N₂ comes from this injection. Synthesis requires H₂/N₂ = 3.0 exactly. Air flow is set so that N₂ in air = 1/4 of H₂ in final syngas. No later step can add or remove N₂ — get this wrong and the entire synthesis is off-stoichiometry."},
+    {c:"wa",q:"Why 1100–1200°C combustion zone?",a:"At this temperature, residual CH₄ equilibrium conversion is >99%. The catalyst bed then cools the gas endothermically while completing reforming to 0.30% CH₄. Without this intense heat, 10% CH₄ cannot be reduced to 0.30%."},
+    {c:"wg",q:"Why rapid cooling in E3206 immediately after?",a:"Boudouard carbon deposition (2CO→C) is spontaneous in the 650–776°C window. E3206 is placed right at reactor exit to quench the 990°C gas through this range in seconds, not minutes."}
+  ],
+  logic:[
+    {n:"1",d:"O₂ fully combusted in upper zone before catalyst",r:"Residual O₂ contacting Ni catalyst → NiO (inactive). Burner design ensures complete combustion in the upper refractory-lined zone before gas enters the catalyst bed.",ifn:"Residual O₂ to Ni → catalyst oxidation → deactivation"},
+    {n:"2",d:"Combustion temperature limited below 1400°C",r:"RKS-2-7H catalyst sinters above 1400°C. Sintering fuses Ni crystallites → smaller surface area → permanent activity loss.",ifn:"T >1400°C = sintering = permanent catalyst damage"},
+    {n:"3",d:"CH₄ outlet controlled by adjusting H3201 firing",r:"R3203 has no independent T control — outlet CH₄ depends on H3201 inlet composition. Operators adjust primary reformer firing rate to change inlet CH₄ entering R3203.",ifn:"CH₄ outlet >1% = higher inert load in synthesis loop → lower conversion"},
+    {n:"4",d:"E3206 WHB placed immediately at reactor exit",r:"990°C gas in pipework slowly deposits Boudouard carbon. E3206 is the first piece of equipment after R3203 to minimise residence time at high T.",ifn:"Slow cooling = carbon deposits in pipework and downstream equipment"}
+  ],
+  equip:[
+    {t:"R3203",n:"Secondary Reformer",why:"Refractory-lined vessel is needed because 1100–1200°C exceeds all metal alloy limits. Separate upper combustion zone ensures O₂ is fully consumed before the gas contacts the Ni catalyst bed below.",absent:"(1) 10% CH₄ remains as inert → larger purge required; (2) No N₂ source → ammonia synthesis impossible."},
+    {t:"E3206",n:"Secondary Reformer WHB",why:"Positioned directly at reactor outlet for maximum quench rate through the 650–776°C Boudouard window. Also generates HP steam — one of the plant's most valuable utility outputs.",absent:"Slow cooling → Boudouard carbon deposition in downstream piping, valves, and HT shift catalyst → progressive ΔP rise → eventual blockage."}
+  ],
+  rxns:[
+    {c:"rxr",lbl:"Combustion zone (upper, no catalyst)",eq:"2H₂ + O₂ → 2H₂O     (rapid, 1100–1200°C)"},
+    {c:"rxb",lbl:"Catalyst bed (lower, RKS-2-7H)",eq:"CH₄ + H₂O ⇌ CO + 3H₂  (endothermic → cools gas)"},
+    {c:"rxr",lbl:"Boudouard — MUST avoid at 650–776°C",eq:"2CO ⇌ CO₂ + C  (carbon deposition risk!)"},
+    {c:"rxg",lbl:"Outlet",eq:"990°C · CH₄=0.30% · CO=13% · CO₂=7.3% · N₂=22%"}
+  ],
+  consequence:"Cannot be skipped — no N₂ source, no ammonia synthesis. Wrong air flow = wrong H₂/N₂ ratio for entire plant with no downstream correction. Most consequential single control point in the process.",
+  specs:[{v:"39",u:"m³",l:"RKS-2-7H catalyst"},{v:"990",u:"°C",l:"Reactor outlet"},{v:"0.30",u:"%",l:"CH₄ out (dry)"},{v:"<1400",u:"°C",l:"Sintering limit"}],
+  conds:[{t:"Combustion 1100–1200°C",c:"ctr"},{t:"Tout = 990°C",c:"ctr"},{t:"N₂ from air",c:"ctb"},{t:"Rapid WHB quench",c:"cta"}],
+  ifnot:["Wrong air → wrong H₂/N₂ → no ammonia or off-spec product","Residual O₂ to catalyst → Ni oxidation → deactivation","Slow cooling → Boudouard carbon → ΔP rise → blockage"],
+  svgH:195,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="70" width="90" height="34" rx="3" fill="#8a1a1a22" stroke="#8a1a1a" stroke-width="1"/>
+<text x="55" y="84" text-anchor="middle" font-size="10" fill="#ff6040" font-family="Space Grotesk" font-weight="600">From H3201</text>
+<text x="55" y="97" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">800°C · CH₄≈10%</text>
+<line x1="100" y1="87" x2="130" y2="87" stroke="#c84b00" stroke-width="2" marker-end="url(#a)"/>
+<rect x="130" y="14" width="250" height="165" rx="5" fill="#140808" stroke="#c84b00" stroke-width="2"/>
+<text x="255" y="34" text-anchor="middle" font-size="12" fill="#ff8040" font-family="Space Grotesk" font-weight="700">R3203 — Secondary Reformer</text>
+<rect x="148" y="42" width="214" height="55" rx="3" fill="#2a1008" stroke="#c84b00" stroke-width="0.5"/>
+<text x="255" y="60" text-anchor="middle" font-size="11" fill="#ff6020" font-family="Space Grotesk" font-weight="600">Combustion zone</text>
+<text x="255" y="74" text-anchor="middle" font-size="10" fill="#f5a623" font-family="Space Mono">1100–1200°C  ·  O₂ consumed</text>
+<text x="255" y="88" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">2H₂+O₂→2H₂O  ·  partial CH₄ combustion</text>
+<rect x="148" y="104" width="214" height="62" rx="3" fill="#0a1025" stroke="#1a3f7a" stroke-width="0.5"/>
+<text x="255" y="122" text-anchor="middle" font-size="11" fill="#5b8def" font-family="Space Grotesk" font-weight="600">RKS-2-7H catalyst bed</text>
+<text x="255" y="136" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">39 m³  ·  CH₄+H₂O→CO+3H₂</text>
+<text x="255" y="149" text-anchor="middle" font-size="9" fill="#5b8def" font-family="Space Mono">Outlet: 990°C  ·  CH₄=0.30%</text>
+<text x="255" y="163" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Sinter limit: 1400°C</text>
+<line x1="380" y1="87" x2="422" y2="87" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="422" y="70" width="100" height="34" rx="3" fill="#0a1020" stroke="#1a3f7a" stroke-width="1.5"/>
+<text x="472" y="84" text-anchor="middle" font-size="10" fill="#5b8def" font-family="Space Grotesk" font-weight="600">E3206 WHB</text>
+<text x="472" y="97" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">HP steam · quench</text>
+<rect x="10" y="140" width="90" height="34" rx="3" fill="#1a3f7a22" stroke="#1a3f7a" stroke-width="1"/>
+<text x="55" y="154" text-anchor="middle" font-size="10" fill="#5b8def" font-family="Space Grotesk" font-weight="600">Process air</text>
+<text x="55" y="167" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">→ N₂ for H₂/N₂=3</text>
+<path d="M100 157 L130 90" fill="none" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>`
+},
+
+{
+  sec:"B",sl:"Reaction",sc:"#1a3f7a",sbg:"#e6edf8",
+  title:"CO Shift Conversion",
+  hook:"Reformed gas has 13% CO — but we want H₂. The shift reaction converts CO → CO₂ + H₂. The challenge: equilibrium and rate have opposite temperature dependencies, forcing a two-stage design.",
+  why:[
+    {c:"wg",q:"Why convert CO to H₂?",a:"(1) CO is 'lost hydrogen' — each mole could yield 3 more moles H₂. (2) CO is a severe poison to the synthesis catalyst. (3) CO and CO₂ together must be <10 ppm before the converter — shift is the first step in achieving this."},
+    {c:"wb",q:"Why two stages (HT then LT)?",a:"Shift is exothermic: low T → better equilibrium but slower rate. HT (350–440°C): fast rate, converts 13%→4%. LT (200–230°C): favourable equilibrium, converts 4%→0.3%. One stage cannot achieve both rate and conversion."},
+    {c:"wa",q:"Why a chlorine guard on R3205?",a:"Steam lines carry trace NaCl and other salts. Cu/Zn catalyst deactivates permanently at 0.1 wt% Cl pickup. The 6.1 m³ LSK guard layer sacrificially absorbs all chlorides before they reach the main catalyst. Cheap insurance protecting 122 m³ of expensive Cu/Zn."},
+    {c:"wr",q:"Why bypass LT converter at startup?",a:"During initial plant startup, sulphur leaches from secondary reformer brick lining and HT shift catalyst itself. Cu/Zn deactivates permanently at 0.2 wt% S. LT bypass stays open until gas analysis confirms S <0.1 ppm."}
+  ],
+  logic:[
+    {n:"1",d:"R3204 limited to 350–470°C range",r:"Above 470°C: Fe catalyst over-reduces to Fe₃O₄, losing Cr promoter → rapid deactivation. Below 330°C: rate too slow for commercial conversion.",ifn:"T >470°C = over-reduction = activity loss = higher CO outlet"},
+    {n:"2",d:"Interstage cooling between HT and LT",r:"HT outlet ~440°C. LT catalyst (Cu/Zn) max operating T = 270°C. Interstage cooling is mandatory — not optional.",ifn:"No cooling = LT inlet too hot = Cu/Zn sintering = catalyst destroyed"},
+    {n:"3",d:"LK-801-S activated at 150–200°C with dilute H₂",r:"CuO → Cu reduction must be slow and controlled. Fast reduction with concentrated H₂ causes runaway ΔT in the bed, sintering the fresh catalyst before first use.",ifn:"Fast reduction = bed T spike = Cu sintering = reduced activity before day 1"},
+    {n:"4",d:"Liquid water must never contact hot catalyst",r:"Both SK201-2 and LK-801-S disintegrate on contact with liquid water at operating temperature — the steam flash physically destroys the pellet structure.",ifn:"Liquid water ingress = catalyst disintegration = must replace before restart"}
+  ],
+  equip:[
+    {t:"R3204",n:"HT Shift (Fe/Cr)",why:"Fe/Cr catalyst is thermally robust at 350–470°C and sulphur-tolerant at plant levels. It handles the bulk conversion (13%→4%) fast. Only Fe/Cr can operate at the high temperatures present after the secondary reformer WHB.",absent:"Without R3204: 13% CO enters R3205 directly. Temperature rise = 13 × 75°C/mol% = 975°C spike → instant sintering and destruction of Cu/Zn catalyst."},
+    {t:"R3205",n:"LT Shift (Cu/Zn)",why:"Cu/Zn operates at 200–250°C where equilibrium gives <0.3% CO. Only this catalyst achieves deep CO removal at low temperature. The chlorine guard top layer protects the main catalyst.",absent:"Without R3205: 4% CO exits to CO₂ absorber. After GV section, 4% CO reaches methanator → +300°C excursion → instant destruction."}
+  ],
+  rxns:[
+    {c:"rxg",lbl:"Water-gas shift (both stages)",eq:"CO + H₂O ⇌ CO₂ + H₂     ΔH = –41.2 kJ/mol (exothermic)"},
+    {c:"rxb",lbl:"Conversion profile",eq:"Feed: 13%  →  After HT: ~4%  →  After LT: ~0.3%"}
+  ],
+  consequence:"High CO downstream destroys catalysts in order: LT shift Cu/Zn (if bypassed at wrong time) → methanator (temperature excursion) → synthesis KMIR catalyst (oxidation). Every downstream catalyst depends on this step working correctly.",
+  specs:[{v:"92.28",u:"m³",l:"R3204 Fe/Cr"},{v:"122",u:"m³",l:"R3205 Cu/Zn"},{v:"350–440",u:"°C",l:"R3204 range"},{v:"~0.3",u:"%",l:"CO out (LT)"}],
+  conds:[{t:"HT: SK201-2 Fe/Cr",c:"cta"},{t:"LT: LK-801-S Cu/Zn",c:"ctb"},{t:"CO out ~0.3%",c:"ctg"},{t:"Bypass LT at startup",c:"ctr"}],
+  ifnot:["No HT stage → 13% CO destroys LT catalyst instantly on startup","No LT stage → 4% CO to methanator → +300°C excursion → meth. destroyed","Cu/Zn without Cl-guard → rapid permanent deactivation from steam salts"],
+  svgH:190,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="80" width="80" height="32" rx="3" fill="#8a1a1a22" stroke="#8a1a1a" stroke-width="1"/>
+<text x="50" y="93" text-anchor="middle" font-size="10" fill="#ff6040" font-family="Space Grotesk" font-weight="600">Reformed gas</text>
+<text x="50" y="106" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">CO ≈ 13%</text>
+<line x1="90" y1="96" x2="118" y2="96" stroke="#c84b00" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="118" y="56" width="170" height="80" rx="4" fill="#2a1a08" stroke="#f5a623" stroke-width="2"/>
+<text x="203" y="76" text-anchor="middle" font-size="11" fill="#f5a623" font-family="Space Grotesk" font-weight="700">R3204  HT Shift</text>
+<text x="203" y="90" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">SK201-2 Fe/Cr · 92.28 m³</text>
+<text x="203" y="103" text-anchor="middle" font-size="9" fill="#f5a623" font-family="Space Mono">350→440°C</text>
+<text x="203" y="116" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">CO: 13% → ~4%</text>
+<text x="203" y="130" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">CO+H₂O⇌CO₂+H₂</text>
+<line x1="203" y1="136" x2="203" y2="158" stroke="#9a9088" stroke-width="1.5"/>
+<rect x="148" y="158" width="110" height="24" rx="3" fill="#111010" stroke="#5c5852" stroke-width="1"/>
+<text x="203" y="174" text-anchor="middle" font-size="10" fill="#9a9088" font-family="Space Grotesk">Interstage cooling</text>
+<line x1="203" y1="182" x2="203" y2="200" stroke="#9a9088" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="370" y="50" width="175" height="90" rx="4" fill="#0a1025" stroke="#1a3f7a" stroke-width="2"/>
+<text x="457" y="70" text-anchor="middle" font-size="11" fill="#5b8def" font-family="Space Grotesk" font-weight="700">R3205  LT Shift</text>
+<text x="457" y="84" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">LK-801-S Cu/Zn · 122 m³</text>
+<text x="457" y="97" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">+LSK Cl-guard 6.1 m³ top</text>
+<text x="457" y="110" text-anchor="middle" font-size="9" fill="#5b8def" font-family="Space Mono">200→230°C</text>
+<text x="457" y="123" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">CO: ~4% → ~0.3%</text>
+<text x="457" y="135" text-anchor="middle" font-size="9" fill="#8a1a1a" font-family="Space Mono">Bypass at startup!</text>
+<path d="M288 180 L340 180 L340 96 L370 96" fill="none" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="314" y="172" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">200°C in</text>
+<line x1="545" y1="95" x2="585" y2="95" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="585" y="78" width="85" height="34" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="2"/>
+<text x="627" y="92" text-anchor="middle" font-size="10" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">CO ~0.3%</text>
+<text x="627" y="105" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">→ CO₂ rem.</text>`
+},
+
+{
+  sec:"B",sl:"Reaction",sc:"#1a3f7a",sbg:"#e6edf8",
+  title:"CO₂ Removal",
+  hook:"CO₂ at 15–18% must drop to <0.03% before the methanator. Simultaneously, this step produces the CO₂ feedstock for the adjacent urea plant — turning what would be a waste stream into revenue.",
+  why:[
+    {c:"wb",q:"Why hot potassium carbonate (not amines)?",a:"Hot K₂CO₃ absorbs and regenerates at nearly the same temperature (~106°C) — no heating/cooling cycle needed. MEA amine systems require significant steam for regeneration. Benfield/GV saves 30–40% regeneration steam vs. amine."},
+    {c:"wg",q:"Why add glycine activator?",a:"Plain K₂CO₃ absorbs CO₂ too slowly. Glycine acts as a CO₂ carrier: rapidly forms a carbamate with CO₂, then transfers CO₂ to carbonate in bulk. Increases absorption rate 3–5×. DEA catalyses glycine carbamate hydrolysis — regenerating the carrier."},
+    {c:"wa",q:"Why hydraulic turbine TX3301?",a:"Rich solution leaves absorber at ~28 kg/cm²g, must be letdown to 1.0 kg/cm²g for regeneration. Rather than wasting this pressure energy across a valve, TX3301 converts it to shaft work — directly drives pump P3301. Saves ~200–300 kW electrical."},
+    {c:"wp",q:"Why export CO₂ to urea plant?",a:"Urea synthesis: NH₃ + CO₂ → urea (1 mol CO₂ per 2 mol NH₃). The CO₂ recovered here is the exact feedstock for the urea plant. Turns a removal step into a profit centre — CO₂ stream has significant commercial value."}
+  ],
+  logic:[
+    {n:"1",d:"Two-stage absorption: semilean (lower) + lean (upper)",r:"Semilean handles bulk CO₂ efficiently at high temperature (fast kinetics). Lean solution needed only for final polishing to <0.03%. Using lean everywhere = 40% more regeneration steam.",ifn:"Single-stage lean only = 40% higher steam consumption = larger boiler requirement"},
+    {n:"2",d:"HP regenerator (1.0 bar) + LP regenerator (0.1 bar)",r:"HP regen strips bulk CO₂ → semilean. LP regen uses flash vapour energy for deeper stripping → lean. Two-stage regeneration saves ~20% steam vs. single-stage.",ifn:"Single-stage regeneration = higher steam use = less energy efficiency"},
+    {n:"3",d:"Vanadium oxide corrosion inhibitor in solution",r:"Hot K₂CO₃ at 106°C corrodes carbon steel. V₂O₅ forms a protective passivating layer. Without it, vessel internals corrode and fail within 2–3 years.",ifn:"No inhibitor = vessel corrosion = unplanned shutdown for repair every 2–3 years"},
+    {n:"4",d:"CO₂ slip target set at <0.03% (not tighter)",r:"Methanator can handle 0.03% CO₂ safely (ΔT ≈ 18°C). Tighter target needs more lean solution, deeper regeneration, more steam — costs exceed benefits.",ifn:"Too tight target = unnecessary operating cost with no benefit"}
+  ],
+  equip:[
+    {t:"F3303",n:"CO₂ Absorber (5 SS beds)",why:"Packed tower preferred over trays because K₂CO₃/glycine solution is foam-prone. SS random packing gives high contact area, low ΔP, and foam tolerance.",absent:"Without F3303: 15–18% CO₂ reaches methanator → +15 × 60°C/mol% = +900°C excursion → catalyst destroyed instantly."},
+    {t:"F3301/F3302",n:"HP + LP Regenerators",why:"Two towers at different pressures achieve deeper solution regeneration than a single tower while using less steam. LP tower uses free flash energy from pressure letdown rather than requiring external steam.",absent:"No regeneration = K₂CO₃ becomes fully KHCO₃ (spent) within hours → absorber capacity lost → CO₂ breakthrough."}
+  ],
+  rxns:[
+    {c:"rxb",lbl:"CO₂ absorption",eq:"CO₃²⁻ + CO₂ + H₂O → 2HCO₃⁻"},
+    {c:"rxn",lbl:"Glycine carrier (rate accelerator)",eq:"Glycine + CO₂ → Glycine-carbamate  (fast)"},
+    {c:"rxa",lbl:"Regeneration",eq:"HCO₃⁻ → CO₃²⁻ + CO₂  (thermal, low pressure)"},
+    {c:"rxg",lbl:"Target",eq:"CO₂ out < 0.03 mol%  →  methanator"}
+  ],
+  consequence:"Without CO₂ removal: methanator inlet has 15–18% CO₂ → +900°C excursion → instant catalyst destruction. CO₂ in synthesis loop forms ammonium carbamate deposits, causes Boudouard carbon, and poisons KMIR catalyst.",
+  specs:[{v:"30",u:"wt%",l:"K₂CO₃ conc."},{v:"5",u:"beds",l:"F3303 SS packing"},{v:"<0.03",u:"%",l:"CO₂ out"},{v:"41.5",u:"kNm³/h",l:"CO₂ to urea"}],
+  conds:[{t:"K₂CO₃/Glycine/DEA",c:"ctb"},{t:"CO₂ out <0.03%",c:"ctg"},{t:"HP/LP regen",c:"ctn"},{t:"V₂O₅ inhibitor",c:"cta"}],
+  ifnot:["CO₂ to methanator → +900°C → catalyst destroyed instantly","CO₂ in synthesis loop → carbamate deposits → KMIR oxidation","No inhibitor → vessel corrosion → unplanned shutdown every 2–3 yr"],
+  svgH:185,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="90" width="80" height="32" rx="3" fill="#1a3f7a22" stroke="#1a3f7a" stroke-width="1"/>
+<text x="50" y="103" text-anchor="middle" font-size="10" fill="#5b8def" font-family="Space Grotesk" font-weight="600">Shifted gas</text>
+<text x="50" y="116" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">CO₂ ~15–18%</text>
+<line x1="90" y1="106" x2="118" y2="106" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="118" y="30" width="145" height="150" rx="4" fill="#0a1020" stroke="#1a3f7a" stroke-width="2"/>
+<text x="190" y="50" text-anchor="middle" font-size="12" fill="#5b8def" font-family="Space Grotesk" font-weight="700">F3303</text>
+<text x="190" y="64" text-anchor="middle" font-size="10" fill="#9a9088" font-family="Space Mono">CO₂ Absorber</text>
+<line x1="136" y1="74" x2="246" y2="74" stroke="#1a3f7a" stroke-width="0.5" stroke-dasharray="3 2"/>
+<line x1="136" y1="92" x2="246" y2="92" stroke="#1a3f7a" stroke-width="0.5" stroke-dasharray="3 2"/>
+<line x1="136" y1="110" x2="246" y2="110" stroke="#1a3f7a" stroke-width="0.5" stroke-dasharray="3 2"/>
+<line x1="136" y1="128" x2="246" y2="128" stroke="#1a3f7a" stroke-width="0.5" stroke-dasharray="3 2"/>
+<text x="190" y="146" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Semilean 106°C (lower)</text>
+<text x="190" y="158" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">+ Lean 70°C (upper)</text>
+<text x="190" y="170" text-anchor="middle" font-size="9" fill="#5a6078" font-family="Space Mono">K₂CO₃/Glycine/DEA/V₂O₅</text>
+<line x1="190" y1="30" x2="190" y2="16" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="120" y="4" width="140" height="14" rx="2" fill="#0a1a10" stroke="#1a6b4a" stroke-width="1.5"/>
+<text x="190" y="14" text-anchor="middle" font-size="9" fill="#4fc3a1" font-family="Space Mono" font-weight="700">CO₂ &lt; 0.03%</text>
+<rect x="345" y="30" width="155" height="140" rx="4" fill="#1a1008" stroke="#f5a623" stroke-width="2"/>
+<text x="422" y="50" text-anchor="middle" font-size="12" fill="#f5a623" font-family="Space Grotesk" font-weight="700">F3301/F3302</text>
+<text x="422" y="65" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Regenerators</text>
+<text x="422" y="80" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">HP: 1.0 bar</text>
+<text x="422" y="94" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">LP: 0.1 bar</text>
+<text x="422" y="108" text-anchor="middle" font-size="9" fill="#f5a623" font-family="Space Mono">TX3301 turbine</text>
+<text x="422" y="122" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">drives P3301</text>
+<path d="M263 125 L345 125" fill="none" stroke="#9a9088" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+<text x="304" y="117" text-anchor="middle" font-size="9" fill="#5a6078" font-family="Space Mono">rich soln.</text>
+<path d="M345 100 L263 100" fill="none" stroke="#9a9088" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+<text x="304" y="92" text-anchor="middle" font-size="9" fill="#5a6078" font-family="Space Mono">lean soln.</text>
+<line x1="422" y1="30" x2="422" y2="16" stroke="#f5a623" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="350" y="4" width="144" height="14" rx="2" fill="#1a0f00" stroke="#f5a623" stroke-width="1.5"/>
+<text x="422" y="14" text-anchor="middle" font-size="9" fill="#f5a623" font-family="Space Mono">CO₂ → Urea plant`
+},
+
+{
+  sec:"B",sl:"Reaction",sc:"#1a3f7a",sbg:"#e6edf8",
+  title:"Methanation",
+  hook:"The last chemical guard before the synthesis loop. Even 10 ppm CO or CO₂ irreversibly damages the $2–4M KMIR catalyst. The methanator converts trace carbon oxides to inert methane — the temperature rise tells you exactly how much CO₂ is slipping through the GV section.",
+  why:[
+    {c:"wr",q:"Why is even 10 ppm harmful?",a:"CO and CO₂ react with metallic Fe° in KMIR catalyst to form Fe₂O₃ (inactive). Continuous exposure at 10 ppm causes ~20–30% activity loss per year. With a $2–4M catalyst charge, even 5% premature activity loss costs hundreds of thousands of dollars."},
+    {c:"wg",q:"Why convert to CH₄ (not remove by other means)?",a:"CH₄ is completely inert in the synthesis loop — it does not react, does not poison KMIR, and recycles harmlessly until purged. Converting to CH₄ is the only cheap, single-step method to destroy carbon oxides to <10 ppm at this process condition."},
+    {c:"wa",q:"Why is 420°C the hard limit?",a:"Above 420°C, Ni crystallites (PK-5 catalyst) sinter — fuse together into larger particles with less active surface area. Every 10°C above 420°C roughly halves remaining catalyst life. This is a structural, irreversible change — not just a performance preference."},
+    {c:"wb",q:"Why is ΔT a diagnostic tool?",a:"Normal ΔT = 18–19°C (for CO+CO₂ <0.03%). Each mol% CO raises bed T by 75°C; each mol% CO₂ by 60°C. A sudden 40°C jump means ~0.5% CO₂ slip from the GV section — an immediate visible alarm requiring operator intervention."}
+  ],
+  logic:[
+    {n:"1",d:"Two catalyst beds installed (not one)",r:"When upper bed partially deactivates over time, lower bed provides backup conversion. Upper bed loaded first; lower bed held as reserve.",ifn:"Single bed = CO/CO₂ slip when bed ages → synthesis catalyst damage"},
+    {n:"2",d:"Inlet controlled to 290–320°C",r:"Below 280°C: reaction rate on PK-5 too slow to achieve <10 ppm within available catalyst volume. Above 420°C: catalyst sintering.",ifn:"T <280°C = incomplete conversion → CO/CO₂ slip to synthesis"},
+    {n:"3",d:"No steam purging or heating — ever",r:"Steam without H₂ oxidises metallic Ni → NiO (inactive). Recovery requires careful H₂ reduction — adding days to startup procedures.",ifn:"Steam purge = catalyst oxidation = lengthy re-reduction needed"},
+    {n:"4",d:"Gas cooled to 38°C in E3312 before B3311",r:"Methanation produces water. At 92°C (after E3311) gas is still saturated with steam. 38°C cooling condenses virtually all water. Wet syngas reaching synthesis loop deactivates KMIR.",ifn:"Wet gas to loop = water deactivates KMIR → early catalyst change"}
+  ],
+  equip:[
+    {t:"R3311",n:"Methanator (PK-5 Ni)",why:"PK-5 with ~27% Ni gives high activity at the very low CO/CO₂ concentrations present (<300 ppm total). Two-bed design provides operational reserve. The vessel is sized so that even with partial deactivation, <10 ppm outlet is maintained.",absent:"Without R3311: 300 ppm CO₂ continuously contacts KMIR → ~25–30% activity loss per year → unplanned catalyst change 2–3 years early → $2–4M unbudgeted cost."},
+    {t:"E3311",n:"Feed/effluent gas-gas HX",why:"Uses hot methanator outlet (339°C) to preheat cold inlet, recovering heat internally. Reduces load on downstream water cooler E3312. Net: less cooling water needed AND less thermal waste.",absent:"Full 339°C outlet enthalpy rejected to cooling water — significant energy waste, requires larger E3312."}
+  ],
+  rxns:[
+    {c:"rxa",lbl:"Methanation (exothermic)",eq:"CO  + 3H₂ → CH₄ + H₂O    ΔH = –206 kJ/mol"},
+    {c:"rxa",eq:"CO₂ + 4H₂ → CH₄ + 2H₂O   ΔH = –165 kJ/mol"},
+    {c:"rxb",lbl:"Temperature diagnostic",eq:"ΔT ≈ 75°C/mol% CO  ·  60°C/mol% CO₂"},
+    {c:"rxg",lbl:"Target",eq:"CO + CO₂ < 10 ppm combined at outlet"}
+  ],
+  consequence:"Without methanator: 300 ppm CO₂ reaching KMIR → 20–30% activity loss per year → unplanned $2–4M catalyst change 2–3 years early. The methanator pays for itself every year in KMIR catalyst protection.",
+  specs:[{v:"60",u:"m³",l:"PK-5 Ni catalyst"},{v:"≤420",u:"°C",l:"Max safe T"},{v:"<10",u:"ppm",l:"CO+CO₂ out"},{v:"18–19",u:"°C",l:"Normal ΔT"}],
+  conds:[{t:"290–320°C inlet",c:"cta"},{t:"Max 420°C",c:"ctr"},{t:"No steam purge!",c:"ctr"},{t:"CO+CO₂ <10 ppm",c:"ctg"}],
+  ifnot:["CO/CO₂ to synthesis → KMIR oxidation → 20–30% activity loss/yr","T >420°C → Ni sintering → permanent catalyst degradation","Wet syngas → water deactivates KMIR → early unplanned change"],
+  svgH:185,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="70" width="95" height="34" rx="3" fill="#1a3f7a22" stroke="#1a3f7a" stroke-width="1"/>
+<text x="57" y="84" text-anchor="middle" font-size="10" fill="#5b8def" font-family="Space Grotesk" font-weight="600">Purified gas</text>
+<text x="57" y="97" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">CO+CO₂ ~300ppm</text>
+<line x1="105" y1="87" x2="133" y2="87" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="133" y="25" width="200" height="120" rx="4" fill="#0a1020" stroke="#1a3f7a" stroke-width="2"/>
+<text x="233" y="44" text-anchor="middle" font-size="12" fill="#5b8def" font-family="Space Grotesk" font-weight="700">R3311 — Methanator</text>
+<text x="233" y="58" text-anchor="middle" font-size="10" fill="#9a9088" font-family="Space Mono">PK-5 Ni ~27% · 60 m³</text>
+<rect x="150" y="64" width="166" height="30" rx="2" fill="#1a2040" stroke="#5b8def" stroke-width="0.5"/>
+<text x="233" y="76" text-anchor="middle" font-size="10" fill="#9a9088" font-family="Space Mono">Bed 1 · 290–320°C in</text>
+<text x="233" y="88" text-anchor="middle" font-size="9" fill="#5b8def" font-family="Space Mono">CO + 3H₂ → CH₄</text>
+<rect x="150" y="100" width="166" height="28" rx="2" fill="#101830" stroke="#5b8def" stroke-width="0.5"/>
+<text x="233" y="116" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Bed 2 · backup · max 420°C</text>
+<text x="233" y="138" text-anchor="middle" font-size="9" fill="#c84b00" font-family="Space Mono">CO+CO₂ → &lt;10 ppm out</text>
+<line x1="333" y1="87" x2="370" y2="87" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="370" y="70" width="75" height="34" rx="3" fill="#111010" stroke="#5c5852" stroke-width="1"/>
+<text x="407" y="84" text-anchor="middle" font-size="10" fill="#9a9088" font-family="Space Grotesk" font-weight="600">E3311→E3312</text>
+<text x="407" y="97" text-anchor="middle" font-size="9" fill="#5c5852" font-family="Space Mono">339°C→38°C</text>
+<line x1="445" y1="87" x2="472" y2="87" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="472" y="70" width="55" height="34" rx="3" fill="#111010" stroke="#5c5852" stroke-width="1"/>
+<text x="499" y="84" text-anchor="middle" font-size="10" fill="#9a9088" font-family="Space Grotesk" font-weight="600">B3311</text>
+<text x="499" y="97" text-anchor="middle" font-size="9" fill="#5c5852" font-family="Space Mono">H₂O sep.</text>
+<line x1="527" y1="87" x2="556" y2="87" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="556" y="70" width="110" height="34" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="2"/>
+<text x="611" y="84" text-anchor="middle" font-size="10" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">Syngas ready</text>
+<text x="611" y="97" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">&lt;10 ppm ox.</text>`
+},
+
+{
+  sec:"C",sl:"Synthesis",sc:"#8a1a1a",sbg:"#fde6e6",
+  title:"Ammonia Synthesis",
+  hook:"N₂ + 3H₂ → 2NH₃. Only ~30% converts per pass due to equilibrium limits. Unconverted gas is recycled and tried again. The entire plant was built to feed this one converter.",
+  why:[
+    {c:"wr",q:"Why 220 kg/cm²g?",a:"Le Chatelier: 4 moles gas → 2 moles product. Higher P = more NH₃ at equilibrium. At 220 bar: ~15–18% NH₃ per pass. Lower P = more passes needed = more recycle = more compression energy. 220 bar is the engineered economic optimum."},
+    {c:"wb",q:"Why radial flow design?",a:"KMIR uses 1.5–3 mm particles for maximum activity. In axial flow: gas through several metres of small particles → enormous ΔP. In radial flow: gas travels only ~30 cm radially → small particles practical without prohibitive pressure drop."},
+    {c:"wa",q:"Why only ~30% per pass?",a:"Catalyst must operate >360°C to be active. But at 360°C+ the equilibrium NH₃ is only 15–18%. Cannot push higher without exceeding T limits or impractical P. Recycling the 70% unconverted gas makes overall conversion effectively complete."},
+    {c:"wg",q:"Why cool to 12°C for separation?",a:"At 12°C and 220 bar, NH₃ condenses to liquid. H₂ and N₂ stay gas. Liquid NH₃ drains to separator B3501. Unconverted H₂+N₂ gas recirculates. This is the only practical separation method at synthesis pressure."}
+  ],
+  logic:[
+    {n:"1",d:"Minimum 360°C inlet temperature maintained",r:"Below 360°C: reaction rate too slow → can't sustain exothermic loop → reaction 'extinguishes'. Once out, must restart with H3501 heater — lengthy procedure.",ifn:"Inlet <360°C = reaction extinction → startup heater + hours of recovery"},
+    {n:"2",d:"Hot spot never allowed above 520°C",r:"Above 520°C: K₂O and Al₂O₃ promoters migrate, Ni crystallites sinter → irreversible activity loss. Catalyst life drops from 5+ years to 2–3 years.",ifn:"Hot spot >520°C = catalyst sintering → reduced yield for remaining life"},
+    {n:"3",d:"Cold shots injected between bed 1 and bed 2",r:"1st bed exit is at ~500–510°C. Direct entry to 2nd bed → 2nd hot spot exceeds 520°C. Cold gas injection quenches inter-bed stream to ~370°C — optimal 2nd bed inlet.",ifn:"No cold shots = 2nd bed over-temperature = hot spot violation"},
+    {n:"4",d:"Liquid NH₃ separated before recycle",r:"NH₃ remaining in recycle gas shifts equilibrium backward, reducing driving force for new synthesis. Separation first keeps NH₃ concentration in circulating gas low — maximum conversion driving force maintained.",ifn:"NH₃ not separated = back-reaction lowers conversion → less product per pass"}
+  ],
+  equip:[
+    {t:"R3501",n:"Ammonia Converter (radial flow)",why:"Radial flow enables 1.5–3 mm particles (maximum activity) without unacceptable ΔP. Inter-bed heat exchanger recovers 1st bed heat to preheat feed — reducing startup heater use. Two-bed design allows cold shot quench control.",absent:"Without R3501: no ammonia production. Every other process step exists only to prepare feed for this converter."},
+    {t:"E3501 WHB",n:"Loop waste heat boiler",why:"R3501 produces ~750 kcal/kg NH₃. At 100 TPD this is ~3 MW at 456°C. E3501 converts this to HP steam — simultaneously cooling effluent and generating high-value utility product.",absent:"Without E3501: 456°C heat rejected to cooling water — 3 MW of high-grade thermal energy wasted. Significant energy and cost loss."}
+  ],
+  rxns:[
+    {c:"rxr",lbl:"Ammonia synthesis",eq:"N₂ + 3H₂ ⇌ 2NH₃     ΔH = –92 kJ/mol (exothermic)"},
+    {c:"rxb",lbl:"Equilibrium + rate tradeoff",eq:"High P → more NH₃  ·  Low T → more NH₃  ·  Rate needs high T"},
+    {c:"rxg",lbl:"Per-pass result",eq:"~30% conversion  ·  ~70% recycled  ·  Overall: near-complete"}
+  ],
+  consequence:"This step is the reason the entire plant exists. KMIR catalyst at $2–4M per charge must be protected above all else. Operating at the lowest temperature consistent with sufficient activity is the primary daily operating discipline.",
+  specs:[{v:"109.3",u:"m³",l:"KMIR catalyst"},{v:"≤520",u:"°C",l:"Hot spot limit"},{v:"220",u:"kg/cm²g",l:"Operating pressure"},{v:"~30",u:"%",l:"Per-pass conversion"}],
+  conds:[{t:"220 kg/cm²g",c:"ctr"},{t:"360–520°C",c:"ctr"},{t:"KMIR Fe catalyst",c:"ctn"},{t:"~30% per pass",c:"cta"}],
+  ifnot:["Inlet <360°C = extinction → startup heater intervention","Hot spot >520°C = catalyst sintering → permanent activity loss","CO/CO₂/H₂O entry = KMIR oxidation → reduced yield"],
+  svgH:210,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="88" width="90" height="34" rx="3" fill="#8a1a1a22" stroke="#8a1a1a" stroke-width="1"/>
+<text x="55" y="102" text-anchor="middle" font-size="10" fill="#ff6040" font-family="Space Grotesk" font-weight="600">Syngas 220 bar</text>
+<text x="55" y="115" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">H₂/N₂=3.0</text>
+<line x1="100" y1="105" x2="130" y2="105" stroke="#c84b00" stroke-width="2" marker-end="url(#a)"/>
+<rect x="130" y="16" width="220" height="180" rx="5" fill="#140808" stroke="#c84b00" stroke-width="2"/>
+<text x="240" y="36" text-anchor="middle" font-size="12" fill="#ff8040" font-family="Space Grotesk" font-weight="700">R3501 — NH₃ Converter</text>
+<text x="240" y="50" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Radial flow · KMIR Fe · 1.5–3mm</text>
+<rect x="148" y="58" width="184" height="46" rx="3" fill="#2a1010" stroke="#c84b00" stroke-width="0.5"/>
+<text x="240" y="74" text-anchor="middle" font-size="11" fill="#ff6040" font-family="Space Grotesk" font-weight="600">1st bed · 29.0 m³</text>
+<text x="240" y="87" text-anchor="middle" font-size="9" fill="#f5a623" font-family="Space Mono">360–400°C in · hot spot ≤520°C</text>
+<text x="240" y="98" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Cold shots → 370°C inter-bed</text>
+<rect x="148" y="112" width="184" height="46" rx="3" fill="#1a0808" stroke="#c84b00" stroke-width="0.5"/>
+<text x="240" y="128" text-anchor="middle" font-size="11" fill="#ff6040" font-family="Space Grotesk" font-weight="600">2nd bed · 80.3 m³</text>
+<text x="240" y="141" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">370°C in → 455°C out</text>
+<text x="240" y="153" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">N₂ + 3H₂ → 2NH₃  (~30%)</text>
+<text x="240" y="172" text-anchor="middle" font-size="9" fill="#c84b00" font-family="Space Mono">E3501 WHB → HP steam 456°C</text>
+<text x="240" y="185" text-anchor="middle" font-size="9" fill="#5a6078" font-family="Space Mono">→E3502→E3503→E3504→E3506→E3507</text>
+<line x1="350" y1="105" x2="395" y2="105" stroke="#1a3f7a" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="395" y="78" width="90" height="36" rx="3" fill="#0a1020" stroke="#1a3f7a" stroke-width="1.5"/>
+<text x="440" y="93" text-anchor="middle" font-size="10" fill="#5b8def" font-family="Space Grotesk" font-weight="600">B3501</text>
+<text x="440" y="106" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">NH₃ sep. 12°C</text>
+<line x1="440" y1="114" x2="440" y2="140" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="400" y="140" width="80" height="26" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="2"/>
+<text x="440" y="157" text-anchor="middle" font-size="11" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">Liquid NH₃</text>
+<path d="M395 96 L370 96 L370 105 L370 105" fill="none" stroke="#9a9088" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+<text x="358" y="84" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Recycle</text>
+<text x="358" y="96" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">~70%</text>`
+},
+
+{
+  sec:"C",sl:"Synthesis",sc:"#8a1a1a",sbg:"#fde6e6",
+  title:"Purge, Wash & Distillation",
+  hook:"Ar and CH₄ accumulate in the loop — they must be purged. But purge gas is 60% H₂. Every molecule is recovered: NH₃ by water washing, H₂+CH₄ as fuel. Nothing is wasted.",
+  why:[
+    {c:"wr",q:"Why purge the loop?",a:"Ar (from process air) and CH₄ (from make-up gas) never react. Without purge they build to 80–90% of loop gas within days → H₂/N₂ partial pressure collapses → ammonia production stops."},
+    {c:"wa",q:"Why is purge rate a balance?",a:"Purge gas is ~60% H₂ — expensive synthesised gas. Too much purge: wastes H₂. Too little: inerts build up, conversion falls. Target inert level (10–15% Ar+CH₄) is set by economic balance of H₂ loss cost vs. compression energy wasted on inerts."},
+    {c:"wg",q:"Why chill purge to –25°C first?",a:"Purge gas has 10–20% NH₃. Chilling to –25°C condenses a large fraction back to liquid NH₃ — returned directly to B3501 with zero extra energy. Only the uncondensed fraction goes to the water absorber, reducing its duty."},
+    {c:"wb",q:"Why distil NH₃(aq) at 25 kg/cm²g?",a:"At atmospheric pressure, NH₃ boils at –33°C → refrigerant condenser needed. At 25 bar, NH₃ condensation T = 60°C → cooling water works. This eliminates an entire refrigeration train for the distillation overhead — major capital and energy saving."}
+  ],
+  logic:[
+    {n:"1",d:"Purge taken after E3506, not earlier",r:"At E3506 exit (18.8°C), less NH₃ is in the gas phase → less NH₃ lost per m³ purged. Earlier (hotter) purge loses more valuable NH₃ per unit of inert removed.",ifn:"Hot purge location = more NH₃ lost per Nm³ purged = higher NH₃ recovery cost"},
+    {n:"2",d:"Two absorbers at different pressures (F3522 at 15 bar, F3523 at 81 bar)",r:"Purge gas is at ~15 bar; letdown/inert gas needs to be processed at higher pressure to avoid re-compression. Matching absorber pressure to gas pressure saves compression energy.",ifn:"Single absorber = either compress purge gas (energy cost) or decompress letdown gas (pressure loss)"},
+    {n:"3",d:"Vent gas from absorbers used as fuel in H3201",r:"Absorber overhead contains ~50% H₂ + 30% CH₄ — high calorific value. Routing to reformer burners recovers energy worth ~5–10% of total fuel consumption.",ifn:"Flaring vent gas = loss of H₂+CH₄ calorific value = 5–10% higher fuel cost"},
+    {n:"4",d:"Lean solution returned at 43°C (not colder)",r:"43°C balances: (1) low enough that NH₃ vapour pressure over lean solution is low → good absorption driving force; (2) warm enough for good flow without expensive chilling.",ifn:"Lean too hot = high NH₃ vapour pressure → poor absorption → NH₃ in vent gas above spec"}
+  ],
+  equip:[
+    {t:"F3522/F3523",n:"Ammonia wash absorbers",why:"Water is cheap, available, non-toxic, and has excellent NH₃ capacity. Counter-current contact achieves <0.01–0.02 mol% NH₃ in vent gas. Counter-current operation means water always contacts the leanest gas — maximum efficiency.",absent:"Without wash: purge/vent gases (5–15% NH₃) must be flared. At 100 TPD plant scale, this could mean 5–10 TPD NH₃ lost — 5–10% of production simply wasted."},
+    {t:"F3521",n:"NH₃ distillation column",why:"20-tray column at 25 bar achieves >99.9% NH₃ purity. High pressure selected so overhead condenses with cooling water (not refrigerant) — eliminating an expensive refrigeration train. 20 trays achieves near-complete recovery with lean solution returning at <0.05% NH₃.",absent:"Without distillation: 10–18 mol% aqueous NH₃ cannot be sold. There is no product."}
+  ],
+  rxns:[
+    {c:"rxn",lbl:"Inert accumulation (no reaction — the problem)",eq:"Ar + CH₄ recirculate without reacting → build up"},
+    {c:"rxg",lbl:"NH₃ absorption in F3522/F3523",eq:"NH₃(g) + H₂O → NH₃(aq)   (counter-current water wash)"},
+    {c:"rxb",lbl:"Distillation at 25 bar",eq:"NH₃ bp = 60°C (vs –33°C at 1 bar) → cooling water condenser"}
+  ],
+  consequence:"No purge = synthesis stops within days. No wash = 5–10 TPD NH₃ wasted. No distillation = no product. This chain (purge→chill→wash→distil) is where 'waste' streams are converted into product and fuel.",
+  specs:[{v:"–25",u:"°C",l:"Purge/inert chill T"},{v:"20",u:"trays",l:"F3521 distillation"},{v:"25",u:"kg/cm²g",l:"Distillation P"},{v:">99.9",u:"vol%",l:"NH₃ purity"}],
+  conds:[{t:"Purge after E3506",c:"ctb"},{t:"Chill to –25°C",c:"ctb"},{t:"Water wash",c:"ctg"},{t:"Distil at 25 bar",c:"cta"}],
+  ifnot:["No purge → inerts build to 80–90% → synthesis stops within days","No NH₃ wash → 5–10 TPD NH₃ lost to fuel/flare","No distillation → no marketable product"],
+  svgH:195,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="30" width="85" height="32" rx="3" fill="#8a1a1a22" stroke="#8a1a1a" stroke-width="1"/>
+<text x="52" y="44" text-anchor="middle" font-size="10" fill="#ff6040" font-family="Space Grotesk" font-weight="600">B3501 loop</text>
+<text x="52" y="57" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Purge gas</text>
+<line x1="95" y1="46" x2="122" y2="46" stroke="#c84b00" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="122" y="30" width="82" height="32" rx="3" fill="#140808" stroke="#c84b00" stroke-width="1"/>
+<text x="163" y="44" text-anchor="middle" font-size="10" fill="#ff6040" font-family="Space Grotesk" font-weight="600">E3511</text>
+<text x="163" y="57" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">–25°C chill</text>
+<line x1="204" y1="46" x2="232" y2="46" stroke="#c84b00" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="232" y="16" width="95" height="52" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="1.5"/>
+<text x="279" y="34" text-anchor="middle" font-size="11" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">F3522</text>
+<text x="279" y="48" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Water wash</text>
+<text x="279" y="61" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">15 bar · 20 tray</text>
+<rect x="10" y="120" width="85" height="32" rx="3" fill="#8a1a1a22" stroke="#8a1a1a" stroke-width="1"/>
+<text x="52" y="134" text-anchor="middle" font-size="10" fill="#ff6040" font-family="Space Grotesk" font-weight="600">Letdown+inert</text>
+<text x="52" y="147" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">B3502 · E3509</text>
+<line x1="95" y1="136" x2="122" y2="136" stroke="#c84b00" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="232" y="110" width="95" height="52" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="1.5"/>
+<text x="279" y="128" text-anchor="middle" font-size="11" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">F3523</text>
+<text x="279" y="142" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Water wash</text>
+<text x="279" y="155" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">81 bar · rings</text>
+<path d="M122 136 L180 136 L180 136" fill="none" stroke="#c84b00" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="327" y1="42" x2="390" y2="88" stroke="#1a6b4a" stroke-width="1.5"/>
+<line x1="327" y1="136" x2="390" y2="100" stroke="#1a6b4a" stroke-width="1.5"/>
+<rect x="390" y="80" width="90" height="32" rx="3" fill="#0a1020" stroke="#1a3f7a" stroke-width="1.5"/>
+<text x="435" y="94" text-anchor="middle" font-size="10" fill="#5b8def" font-family="Space Grotesk" font-weight="600">E3523→F3521</text>
+<text x="435" y="107" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Distill 25 bar</text>
+<line x1="480" y1="96" x2="515" y2="96" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="515" y="80" width="110" height="32" rx="3" fill="#0a1a10" stroke="#1a6b4a" stroke-width="2"/>
+<text x="570" y="94" text-anchor="middle" font-size="11" fill="#4fc3a1" font-family="Space Grotesk" font-weight="700">NH₃ &gt;99.9%</text>
+<text x="570" y="107" text-anchor="middle" font-size="9" fill="#1a6b4a" font-family="Space Mono">→ storage</text>
+<rect x="232" y="0" width="95" height="16" rx="2" fill="#1a1008" stroke="#f5a623" stroke-width="1"/>
+<text x="279" y="12" text-anchor="middle" font-size="9" fill="#f5a623" font-family="Space Mono">Fuel H₂+CH₄→H3201`
+},
+
+{
+  sec:"C",sl:"Synthesis",sc:"#8a1a1a",sbg:"#fde6e6",
+  title:"Condensate Stripping",
+  hook:"Process condensate carries dissolved NH₃, CO₂, and methanol — contaminants that destroy demineraliser resin beds. Steam stripping removes them all and cleverly recycles the stripped vapour as process steam to the reformer, where the contaminants decompose harmlessly.",
+  why:[
+    {c:"wg",q:"Why strip the condensate at all?",a:"NH₃ and CO₂ in condensate load up demineraliser resin beds — dramatically increasing chemical regeneration frequency and cost. Methanol passes through resin beds unretained and enters the boiler, causing corrosion at high temperature."},
+    {c:"wb",q:"Why send overhead back to reforming?",a:"The overhead steam (NH₃ + CO₂ + methanol) enters the reformer at 800°C with Ni catalyst. Methanol reforms instantly to CO+H₂. NH₃ decomposes to N₂+H₂. CO₂ joins the reforming reactions. Zero waste, zero emissions — contaminants become process gas."},
+    {c:"wa",q:"Why operate at 38 kg/cm²g?",a:"Overhead steam at 38 bar can be used directly as process steam for reforming without recompression. Operating at atmospheric pressure would produce useless low-pressure steam, requiring a separate steam supply for reforming."},
+    {c:"wr",q:"Why is B3202 separator critical?",a:"Liquid water droplets carried over to hot R3206/H3201 catalyst (490–800°C) flash instantly to steam. The pressure wave physically shatters catalyst pellets. A few hours of condensate carryover can require complete catalyst tube unloading and replacement."}
+  ],
+  logic:[
+    {n:"1",d:"Direct steam injection (not reboiler)",r:"Simplest, most reliable method for dilute aqueous streams. Steam provides both stripping vapour and heat simultaneously. Reboiler design would be 3× more expensive and complex.",ifn:"No consequence — design choice. Reboiler works too but costs more"},
+    {n:"2",d:"Condensate cooled to 45°C before demin plant",r:"Demin ion exchange resins have max operating T ~50°C. Above this, the resin polymer matrix degrades — losing capacity and shortening service life.",ifn:"Hot condensate to demin = resin degradation = loss of capacity = frequent replacement"},
+    {n:"3",d:"B3202 separator at stripper overhead exit",r:"Protects reforming catalysts from liquid water. A knockout drum that adds minimal cost but prevents multi-million-dollar catalyst loss from condensate slug events.",ifn:"No B3202 = condensate slugs → catalyst thermal shock → pellet shattering → unplanned shutdown"}
+  ],
+  equip:[
+    {t:"F3321",n:"Condensate Stripper",why:"Steam stripping at 38 bar produces overhead steam directly usable as process steam for reforming — no recompression needed. Elegant: the step that removes contaminants from water simultaneously produces process steam, eliminating a separate steam supply requirement.",absent:"Without F3321: condensate goes to drain as chemical waste water → raw water consumption increases → demin chemical costs increase → liquid effluent treatment required → regulatory and environmental cost."},
+    {t:"B3202",n:"Overhead separator (KO drum)",why:"Small, simple vessel placed at the one critical interface between waste water treatment and high-temperature catalysis. Prevents any liquid carryover to reformers regardless of upstream upsets.",absent:"Without B3202: any operational upset causing increased mist in overhead → condensate to R3206 or H3201 → catalyst thermal shock → tube pressure lock → emergency shutdown and catalyst replacement (weeks + millions)."}
+  ],
+  rxns:[
+    {c:"rxn",lbl:"Contaminants in condensate",eq:"NH₃ + H₂O ⇌ NH₄⁺ + OH⁻"},
+    {c:"rxn",eq:"CO₂ + H₂O ⇌ H⁺ + HCO₃⁻"},
+    {c:"rxg",lbl:"In reformer — contaminants destroyed",eq:"CH₃OH + H₂O → CO₂ + 3H₂   (methanol reforming)"},
+    {c:"rxg",eq:"NH₃ → N₂ + H₂   (thermal decomposition at 800°C)"}
+  ],
+  consequence:"Without this step: demineraliser costs rise sharply (methanol + NH₃ degrading resins), liquid effluent requires treatment (environmental cost), and boiler corrosion risk from methanol. With this step: closed-loop water recovery, zero liquid discharge, free process steam.",
+  specs:[{v:"38",u:"kg/cm²g",l:"Operating pressure"},{v:"45",u:"°C",l:"Condensate outlet T"},{v:"→ Reformer",u:"",l:"Overhead as steam"},{v:"→ Demin",u:"",l:"Stripped condensate"}],
+  conds:[{t:"38 kg/cm²g",c:"ctn"},{t:"Steam stripping",c:"ctb"},{t:"Overhead → steam",c:"ctg"},{t:"45°C condensate out",c:"ctg"}],
+  ifnot:["No stripping → methanol to boiler → corrosion → tube failure","NH₃ + CO₂ to demin → resin overloading → high chemical cost","Liquid carryover to reformer → catalyst shattering → emergency shutdown"],
+  svgH:185,svg:`<defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="10" y="90" width="105" height="34" rx="3" fill="#8a1a1a22" stroke="#8a1a1a" stroke-width="1"/>
+<text x="62" y="104" text-anchor="middle" font-size="10" fill="#ff6040" font-family="Space Grotesk" font-weight="600">Process condensate</text>
+<text x="62" y="117" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">NH₃ + CO₂ + MeOH</text>
+<line x1="115" y1="107" x2="145" y2="107" stroke="#c84b00" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="145" y="30" width="220" height="148" rx="5" fill="#140808" stroke="#c84b00" stroke-width="2"/>
+<text x="255" y="50" text-anchor="middle" font-size="12" fill="#ff8040" font-family="Space Grotesk" font-weight="700">F3321 — Condensate Stripper</text>
+<text x="255" y="64" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">38 kg/cm²g · Live steam injection</text>
+<line x1="163" y1="72" x2="347" y2="72" stroke="#c84b00" stroke-width="0.5" stroke-dasharray="3 2"/>
+<line x1="163" y1="90" x2="347" y2="90" stroke="#c84b00" stroke-width="0.5" stroke-dasharray="3 2"/>
+<line x1="163" y1="108" x2="347" y2="108" stroke="#c84b00" stroke-width="0.5" stroke-dasharray="3 2"/>
+<line x1="163" y1="126" x2="347" y2="126" stroke="#c84b00" stroke-width="0.5" stroke-dasharray="3 2"/>
+<text x="255" y="147" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">Strips: NH₃ · CO₂ · methanol</text>
+<text x="255" y="162" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">B3202 separator prevents carryover</text>
+<line x1="255" y1="30" x2="255" y2="16" stroke="#1a6b4a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="145" y="2" width="220" height="16" rx="2" fill="#0a1a10" stroke="#1a6b4a" stroke-width="1.5"/>
+<text x="255" y="14" text-anchor="middle" font-size="9" fill="#4fc3a1" font-family="Space Mono" font-weight="700">Overhead steam → reforming (NH₃+CO₂+MeOH destroyed)</text>
+<line x1="365" y1="107" x2="405" y2="107" stroke="#1a3f7a" stroke-width="2" marker-end="url(#a)"/>
+<rect x="405" y="90" width="130" height="34" rx="3" fill="#0a1020" stroke="#1a3f7a" stroke-width="2"/>
+<text x="470" y="104" text-anchor="middle" font-size="11" fill="#5b8def" font-family="Space Grotesk" font-weight="700">Stripped condensate</text>
+<text x="470" y="117" text-anchor="middle" font-size="9" fill="#9a9088" font-family="Space Mono">45°C → Demin plant`
+}
+];
+
+let cur=0;
+
+function nav(){
+  const n=document.getElementById('pnav');
+  n.innerHTML=D.map((s,i)=>{
+    const c=i<cur?'done':i===cur?'active':'';
+    return`<button class="pn ${c}" onclick="jump(${i})">
+      <span class="pnum">${i<cur?'✓':i+1}</span>${s.title.split(' ').slice(0,2).join(' ')}
+    </button>`;
+  }).join('');
+  n.querySelectorAll('.pn')[cur]?.scrollIntoView({inline:'nearest',block:'nearest'});
+}
+
+function render(){
+  const s=D[cur];
+  const pct=Math.round(((cur+1)/D.length)*100);
+  document.getElementById('pb').style.width=pct+'%';
+  document.getElementById('pct').textContent=`${cur+1}/${D.length}`;
+
+  // LEFT
+  document.getElementById('left').innerHTML=`<div class="anim">
+    <div class="eyebrow">
+      <span class="sec-chip" style="background:${s.sbg};color:${s.sc}">${s.sec} · ${s.sl}</span>
+      <span class="sctr">Step ${cur+1} of ${D.length}</span>
+    </div>
+    <h1 class="stitle">${s.title}</h1>
+    <p class="hook">${s.hook}</p>
+
+    <div class="dcard">
+      <svg viewBox="0 0 680 ${s.svgH}" xmlns="http://www.w3.org/2000/svg">${s.svg}</svg>
+    </div>
+
+    <div class="sh">Why this step exists</div>
+    <div class="wgrid">${s.why.map(w=>`
+      <div class="wcard ${w.c}">
+        <div class="wcard-q">${w.q}</div>
+        <div class="wcard-a">${w.a}</div>
+      </div>`).join('')}</div>
+
+    <div class="sh">Why each decision</div>
+    <div class="llist">${s.logic.map(l=>`
+      <div class="litem">
+        <div class="lnum">${l.n}</div>
+        <div class="lbody">
+          <div class="ldecision">${l.d}</div>
+          <div class="lreason">${l.r}</div>
+          <span class="lifnot">If not: ${l.ifn}</span>
+        </div>
+      </div>`).join('')}</div>
+
+    <div class="sh">Why this equipment</div>
+    <table class="etable">
+      <thead><tr><th>Tag</th><th>Equipment</th><th>Why chosen here</th><th>If absent</th></tr></thead>
+      <tbody>${s.equip.map(e=>`
+        <tr>
+          <td>${e.t}</td>
+          <td>${e.n}</td>
+          <td>${e.why}</td>
+          <td>${e.absent}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+
+    <div class="sh">Key reactions</div>
+    <div class="rxlist">${s.rxns.map(r=>`
+      <div class="rx ${r.c}">${r.lbl?`<span class="rx-lbl">${r.lbl}</span>`:''}${r.eq}</div>`).join('')}
+    </div>
+
+    <div class="cbox">
+      <div class="cbox-t">Consequence of skipping this step</div>
+      <div class="cbox-b">${s.consequence}</div>
+    </div>
+  </div>`;
+
+  // RIGHT
+  document.getElementById('right').innerHTML=`<div class="anim">
+    <div class="sb-sec">
+      <div class="sb-h">Conditions</div>
+      <div class="ctags">${s.conds.map(c=>`<span class="ctag ${c.c}">${c.t}</span>`).join('')}</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-h">Key specs</div>
+      <div class="sgrid">${s.specs.map(sp=>`
+        <div class="sc">
+          <div class="sv">${sp.v}<span class="su"> ${sp.u}</span></div>
+          <div class="sl">${sp.l}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-h">If this step fails</div>
+      <div class="inlist">${s.ifnot.map(i=>`
+        <div class="initem"><span class="inarr">→</span>${i}</div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('nstep').textContent=`Step ${cur+1}/${D.length} · ${pct}%`;
+  document.getElementById('ntitle').textContent=cur<D.length-1?`Next: ${D[cur+1].title}`:'Process complete ✓';
+  document.getElementById('prevBtn').disabled=cur===0;
+  const nb=document.getElementById('nextBtn');
+  nb.textContent=cur===D.length-1?'Done ✓':'Next →';
+  nav();
+}
+
+function go(d){cur=Math.max(0,Math.min(D.length-1,cur+d));render();window.scrollTo({top:0,behavior:'smooth'});}
+function jump(i){cur=i;render();window.scrollTo({top:0,behavior:'smooth'});}
+render();
+</script>
+</body>
+</html>
